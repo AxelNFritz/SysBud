@@ -34,4 +34,33 @@ def add_bev(row, cur):
         cur.execute("rollback;")
         print(row), print(" Was rejected")
 
+def search(column, sear):
+    con, cur = get_connection(db)
+    statement=f"SELECT * FROM dryck_utbud WHERE {column} LIKE '%{sear}%';"
+    cur.execute(statement)
+    #cur.execute("SELECT * FROM dryck_utbud WHERE producent like '%Fuller%';")
+    res = cur.fetchall() #[(list0), (list1), ...] tuples!? ;(
+    con.close()
+    #df = pd.DataFrame(res)
+    return res
+
+def apk_sort(lis):
+    res = [[]]
+    for row in lis:
+        p = row[11]
+        pe = float(p[:-1])
+        krl = row[5]
+        apk = (pe/krl)
+        lrow = list(row)
+        lrow.append(apk)
+        res.append(lrow)
+
+    return res
+
+def apk_search(column, sear):
+    res = apk_sort(search(column, sear))
+    return res
+ 
+
+apk_search('namn1', 'Fuller')
 #create_db(db)
