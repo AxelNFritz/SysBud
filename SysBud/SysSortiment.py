@@ -45,7 +45,7 @@ def search(column, sear):
     return res
 
 def apk_sort(lis):
-    res = [[]]
+    res = []
     for row in lis:
         p = row[11]
         pe = float(p[:-1])
@@ -62,5 +62,5 @@ def apk_search(column, sear):
     return res
  
 
-apk_search('namn1', 'Fuller')
+#apk_search('namn1', 'Fuller')
 #create_db(db)
