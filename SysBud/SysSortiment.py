@@ -50,7 +50,10 @@ def apk_sort(lis):
         p = row[11]
         pe = float(p[:-1])
         krl = row[5]
-        apk = (pe/krl)
+        if pe != 0:
+            apk = (pe/krl)
+        else: 
+            apk = 0
         lrow = list(row)
         lrow.append(apk)
         res.append(lrow)
