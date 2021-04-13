@@ -9,6 +9,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.scrollview import ScrollView
 from kivy.core.window import Window
+from kivy.uix.spinner import Spinner
 
 class MyGridLayout(GridLayout):
 
@@ -18,7 +19,7 @@ class MyGridLayout(GridLayout):
 
         self.first = SearchElement()
 
-        self.addsear = Button(text="+ Add search element +", font_size=26, size_hint_y = None, height = 30)        
+        self.addsear = Button(text="+ + + Add search element + + +", font_size=20, size_hint_y = None, height = 30)        
         self.addsear.bind(on_press=self.addbutt)
         self.add_widget(self.addsear)
         self.add_widget(self.first.element)
@@ -37,14 +38,26 @@ class MyApp(App):
 class SearchElement(GridLayout):
     def __init__(self):
 
-        self.element = GridLayout(cols = 1, size_hint_y = None, height = 180)
-        self.top_grid = GridLayout(cols = 3, size_hint_y = None, height = 30)
-        self.scroll = ScrollView(do_scroll_x = False, size_hint=(1, None), size=(Window.width, 150))
-        self.scrollgrid = GridLayout(cols = 1, row_force_default=True, row_default_height=30, size_hint_x = 1, size_hint_y = None, height = 30000)
+        self.spinns = SpinnElements()
 
-        self.top_grid.add_widget(Label(text="search: "))
+        self.element = GridLayout(cols = 1, size_hint_y = None, height = 180)
+        self.top_grid = GridLayout(cols = 8, size_hint_y = None, height = 30)
+        self.scroll = ScrollView(do_scroll_x = False, size_hint=(1, None), size=(Window.width, 150))
+        self.scrollgrid = GridLayout(cols = 1, row_force_default=True, row_default_height=30, size_hint_x = 1, size_hint_y = None, height = 3000)
+
+        self.top_grid.add_widget(self.spinns.sea_op)
+
         self.search = TextInput(multiline=False)
         self.top_grid.add_widget(self.search)
+
+        self.top_grid.add_widget(self.spinns.varugrupp)
+        self.top_grid.add_widget(self.spinns.land)
+
+        self.alt2 = (Button(text="alt2"))
+        self.alt2.bind(on_press=self.allt2)
+        self.top_grid.add_widget(self.alt2)
+
+        self.top_grid.add_widget(self.spinns.sort_op)
 
         self.submit = Button(text="Submit", font_size=18)
         self.submit.bind(on_press=self.press)
@@ -55,12 +68,51 @@ class SearchElement(GridLayout):
         self.element.add_widget(self.scroll)
 
     def press(self, instance):
-        sea = self.search.text
-        if sea != "":
-            res = SysSortiment.apk_search("namn1", sea)
+        search_string = self.search.text
+        search_target = 'namn1'
+        if search_string != "":
+            res = SysSortiment.apk_search(search_target, search_string)
             for row in res:
                 self.scrollgrid.add_widget(Label(text=f"{row}"))
+
+    def allt2(self, instance):
+        print(f'{self.spinns.varugrupp.text}  {self.spinns.land.text}')
+
+class SpinnElements(GridLayout):
+    def __init__(self):
+
+        self.varugrupp_list, self.land_list = SysSortiment.get_spinner_ops()
+
+        self.varugrupp = Spinner(text="Varugrupp",
+                                values=self.varugrupp_list,
+                                size_hint=(None, None),
+                                size=(160, 30),
+                                pos_hint={'center_x': .5, 'center_y': .5},
+                                sync_height=True)
+        
+        self.land = Spinner(text="Land",
+                                values=self.land_list,
+                                size_hint=(None, None),
+                                size=(160, 30),
+                                pos_hint={'center_x': .5, 'center_y': .5},
+                                sync_height=True)
+        
+        self.sea_op = Spinner(text="Sök",
+                                values=('Sök', 'TOP'),
+                                size_hint=(None, None),
+                                size=(60, 30),
+                                pos_hint={'center_x': .5, 'center_y': .5},
+                                sync_height=True)
+
+        self.sort_op = Spinner(text="Sortering",
+                                values=('Sortering', 'APK', 'Pris/Liter'),
+                                size_hint=(None, None),
+                                size=(80, 30),
+                                pos_hint={'center_x': .5, 'center_y': .5},
+                                sync_height=True)
+        
 
 
 if __name__ == '__main__':
     MyApp().run()
+

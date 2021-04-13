@@ -63,7 +63,27 @@ def apk_sort(lis):
 def apk_search(column, sear):
     res = apk_sort(search(column, sear))
     return res
- 
+
+def get_spinner_ops():
+    con, cur = get_connection(db)
+    statement1 = f'SELECT varugrupp FROM dryck_utbud GROUP BY varugrupp;'
+    statement2 = f'SELECT land FROM dryck_utbud GROUP BY land;'
+    cur.execute(statement1)
+    rows1 = cur.fetchall()
+    cur.execute(statement2)
+    rows2 = cur.fetchall()
+    varugrupp_list = list()
+    for row in rows1:
+        varugrupp_list.append(row[0])
+    land_list = list()
+    for row in rows2:
+        land_list.append(row[0])
+
+    return (varugrupp_list, land_list)
+
+
+
 
 #apk_search('namn1', 'Fuller')
 #create_db(db)
+#print(get_spinner_ops())
