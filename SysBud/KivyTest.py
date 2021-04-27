@@ -69,14 +69,22 @@ class SearchElement(GridLayout):
 
     def press(self, instance):
         search_string = self.search.text
+        search_land = self.spinns.land.text
+        search_varugrupp = self.spinns.varugrupp.text
         search_target = 'namn1'
-        if search_string != "":
-            res = SysSortiment.apk_search(search_target, search_string)
+        if (search_string != "") & (self.spinns.sort_op.text == 'Sortering'):
+            res = SysSortiment.reg_search(search_target, search_string, search_land, search_varugrupp)
+            for row in res:
+                self.scrollgrid.add_widget(Label(text=f"{row}"))
+        elif (search_string != "") & (self.spinns.sort_op.text == 'APK'):
+            res = SysSortiment.apk_search(search_target, search_string, search_land, search_varugrupp)
             for row in res:
                 self.scrollgrid.add_widget(Label(text=f"{row}"))
 
+            
+
     def allt2(self, instance):
-        print(f'{self.spinns.varugrupp.text}  {self.spinns.land.text}')
+        print(f'{self.spinns.varugrupp.text}  {self.spinns.land.text} {self.spinns.sort_op.text}')
 
 class SpinnElements(GridLayout):
     def __init__(self):
