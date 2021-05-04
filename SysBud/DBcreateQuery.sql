@@ -1,5 +1,5 @@
 -- SQLite
-CREATE TABLE dryck_utbud(
+CREATE TABLE dryck_utbud (
     Nr INT(10) NOT NULL,
     namn1 VARCHAR(50) NOT NULL,
     namn2 VARCHAR(60),
@@ -12,5 +12,6 @@ CREATE TABLE dryck_utbud(
     land VARCHAR(20) NOT NULL,
     producent VARCHAR(20) NOT NULL,
     alk DOUBLE(10) NOT NULL,
+    APK DOUBLE(20) NOT NULL,
     PRIMARY KEY(Nr)
 );

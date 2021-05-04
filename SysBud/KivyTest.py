@@ -19,8 +19,8 @@ class MyGridLayout(GridLayout):
 
         self.first = SearchElement()
 
-        self.addsear = Button(text="+ + + Add search element + + +", font_size=20, size_hint_y = None, height = 30)        
-        self.addsear.bind(on_press=self.addbutt)
+        self.addsear = Button(text="+ + + Add search element + + +", font_size=20, size_hint_y = None, height = 30, on_press=self.addbutt)        
+        
         self.add_widget(self.addsear)
         self.add_widget(self.first.element)
 
@@ -53,14 +53,14 @@ class SearchElement(GridLayout):
         self.top_grid.add_widget(self.spinns.varugrupp)
         self.top_grid.add_widget(self.spinns.land)
 
-        self.alt2 = (Button(text="alt2"))
-        self.alt2.bind(on_press=self.allt2)
+        self.alt2 = (Button(text="alt2", on_press=self.allt2))
+       
         self.top_grid.add_widget(self.alt2)
 
         self.top_grid.add_widget(self.spinns.sort_op)
 
-        self.submit = Button(text="Submit", font_size=18)
-        self.submit.bind(on_press=self.press)
+        self.submit = Button(text="Submit", font_size=18, on_press=self.press)
+        
         self.top_grid.add_widget(self.submit)
 
         self.scroll.add_widget(self.scrollgrid)
@@ -68,20 +68,17 @@ class SearchElement(GridLayout):
         self.element.add_widget(self.scroll)
 
     def press(self, instance):
-        search_string = self.search.text
+        search_input = self.search.text
         search_land = self.spinns.land.text
         search_varugrupp = self.spinns.varugrupp.text
+        search_option = self.spinns.sea_op.text 
+        search_sort = self.spinns.sort_op.text
         search_target = 'namn1'
-        if (search_string != "") & (self.spinns.sort_op.text == 'Sortering'):
-            res = SysSortiment.reg_search(search_target, search_string, search_land, search_varugrupp)
-            for row in res:
-                self.scrollgrid.add_widget(Label(text=f"{row}"))
-        elif (search_string != "") & (self.spinns.sort_op.text == 'APK'):
-            res = SysSortiment.apk_search(search_target, search_string, search_land, search_varugrupp)
-            for row in res:
-                self.scrollgrid.add_widget(Label(text=f"{row}"))
 
-            
+        res = SysSortiment.search(search_target, search_input, search_option, search_sort, search_varugrupp, search_land)
+        for row in res:
+                self.scrollgrid.add_widget(Label(text=f"{row}"))
+        
 
     def allt2(self, instance):
         print(f'{self.spinns.varugrupp.text}  {self.spinns.land.text} {self.spinns.sort_op.text}')
@@ -113,7 +110,7 @@ class SpinnElements(GridLayout):
                                 sync_height=True)
 
         self.sort_op = Spinner(text="Sortering",
-                                values=('Sortering', 'APK', 'Pris/Liter'),
+                                values=('Sortering', 'APK', 'prisperliter'),
                                 size_hint=(None, None),
                                 size=(80, 30),
                                 pos_hint={'center_x': .5, 'center_y': .5},

@@ -2,8 +2,8 @@ import sqlite3
 import pandas as pd
 
 
-exel = 'Sortiment6.xlsx'
-db = 'sysdb6.db'
+exel = 'Sortiment6 copy.xlsx'
+db = 'sysdb8.db'
 
 def get_connection(db_file):
     connection = sqlite3.connect(db_file)
@@ -14,83 +14,55 @@ def get_connection(db_file):
 def create_db(db_file):
     con, cur = get_connection(db_file)
     print("Creating database...")
+    cur.execute("begin transaction;")
+
     generate_db(exel, cur)
+
+    cur.execute("commit;")
     con.close
     print("Done!")
 
 def generate_db(exel_file, cur):
-    df = pd.read_excel(exel_file) #Slowing it all down?
+    print("Reading exel...")
+    df = pd.read_excel(exel_file, engine='openpyxl')
+    print("Done. Starting to build db..")
+
     for row in df.iterrows():
         r = row[1].tolist()
-        colums = [r[0], r[3], r[4], r[5], r[7], r[8], r[11], r[12], r[13], r[17], r[18], r[22][:-1]] #[0:3:4:5:7:8:11:12:13:17:18:(r[22][:-1])]
-        add_bev(colums, cur)
-
-def add_bev(row, cur):
-    statement=f"INSERT INTO dryck_utbud values('{row[0]}', '{row[1]}', '{row[2]}', '{row[3]}', '{row[4]}', '{row[5]}', '{row[6]}', '{row[7]}', '{row[8]}', '{row[9]}', '{row[10]}', '{row[11]}');"
-    cur.execute("begin transaction;") #Move tansaction to generate_db when it all works
-    try:
-        cur.execute(statement)
-        cur.execute("commit;")
-    except:
-        cur.execute("rollback;")
-        print(row), print(" Was rejected")
-
-
-
-def search(column, sear, land, varugrupp):
-    con, cur = get_connection(db)
-    land_state=f"AND land='{land}'"
-    varugrupp_state=f"AND varugrupp='{varugrupp}'"
-    if land == 'Land': land_state = ""
-    if varugrupp == 'Varugrupp': varugrupp_state = ""
-    statement=f"SELECT * FROM dryck_utbud WHERE {column} LIKE '%{sear}%' {land_state} {varugrupp_state};"
-    cur.execute(statement)
-    res = cur.fetchall() #[(tupel0), (tupel1), ...]
-    con.close()
-    #df = pd.DataFrame(res)
-    return res
-
-def top_search(n, sort, land, typ):
-    con, cur = get_connection(db)
-    statement_ = f"SELECT * FROM dryck_utbud WHERE {column}"
-
-
-    con.close()
-    return res
-
-def apk_add(lis):
-    res = []
-    for row in lis:
-        p = row[11]
-        pe = float(p[:-1])
-        krl = row[5]
-        if pe != 0:
-            apk = (pe/krl)*100
+        alk = float(r[22][:-1])
+        if alk != 0:
+            apk = (alk/r[8])*100
         else: 
             apk = 0
-        lrow = list(row)
-        lrow.append(apk)
-        res.append(lrow)
+        colums = [r[0], r[3], r[4], r[5], r[7], r[8], r[11], r[12], r[13], r[17], r[18], r[22][:-1], apk] #[0:3:4:5:7:8:11:12:13:17:18:(r[22][:-1])]
+        add_bev(colums, cur)
 
+
+ 
+
+def add_bev(row, cur):
+    statement=f"INSERT INTO dryck_utbud values('{row[0]}', '{row[1]}', '{row[2]}', '{row[3]}', '{row[4]}', '{row[5]}', '{row[6]}', '{row[7]}', '{row[8]}', '{row[9]}', '{row[10]}', '{row[11]}','{row[12]}');"
+    cur.execute(statement)
+
+
+def search(target, input, option, sort, varugrupp, land): #(search_target, search_input, search_option, search_varugrupp, search_land)
+    con, cur = get_connection(db)
+
+    land_s = "" if land == 'Land' else f"AND land='{land}'"  # result = x if a > b else y
+    varugrupp_s = "" if varugrupp == 'Varugrupp' else f"AND varugrupp='{varugrupp}'"
+    sort_s = "" if sort == 'Sortering' else f"ORDER BY {sort} DESC"
+    input_s = input if option == 'Sök' else f"LIMIT {input}"
+
+    if option == 'Sök':
+        statement=f"SELECT * FROM dryck_utbud WHERE {target} LIKE '%{input_s}%' {land_s} {varugrupp_s} {sort_s};"
+    else:
+        statement=f"SELECT * FROM dryck_utbud WHERE {target} LIKE '%%' {land_s} {varugrupp_s} {sort_s} {input_s};"
+
+    cur.execute(statement)
+
+    res = cur.fetchall() #[(tupel0), (tupel1), ...]
+    con.close()
     return res
-
-def apk_sort(lis):
-    res = apk_add(lis)
-    res = sorted(res, key=lambda x: float(x[12]))[::-1]
-    return res    
-
-def krl_sort(lis):
-    res = apk_add(lis)
-    res = sorted(res, key=lambda x: float(x[5][:-1]))  
-    return res  
-
-def apk_search(column, sear, land, varugrupp):
-    res = apk_sort(search(column, sear, land, varugrupp))
-    return res
-
-def reg_search(column, sear, land, varugrupp):
-    res = apk_add(search(column, sear, land, varugrupp))
-    return res    
 
 def get_spinner_ops():
     con, cur = get_connection(db)
@@ -109,9 +81,8 @@ def get_spinner_ops():
     for row in rows2:
         land_list.append(row[0])
 
+    con.close()
     return (varugrupp_list, land_list)
-
-
 
 
 #apk_search('namn1', 'Fuller')
