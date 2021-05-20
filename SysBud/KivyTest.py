@@ -18,6 +18,7 @@ class MyGridLayout(GridLayout):
         self.cols = 1
 
         self.first = SearchElement()
+        self.sea_element_list = [self.first]
 
         self.addsear = Button(text="+ + + Add search element + + +", font_size=20, size_hint_y = None, height = 30, on_press=self.addbutt)        
         
@@ -30,6 +31,7 @@ class MyGridLayout(GridLayout):
     def add(self):
         new = SearchElement()
         self.add_widget(new.element)
+        self.sea_element_list.append(new)
 
 class MyApp(App):
     def build(self):
@@ -37,13 +39,19 @@ class MyApp(App):
  
 class SearchElement(GridLayout):
     def __init__(self):
+        self.hidden = True
+        self.rows = 0
 
         self.spinns = SpinnElements()
 
-        self.element = GridLayout(cols = 1, size_hint_y = None, height = 180)
+        self.element = GridLayout(cols = 1, size_hint_y = None, height = 60)
         self.top_grid = GridLayout(cols = 8, size_hint_y = None, height = 30)
-        self.scroll = ScrollView(do_scroll_x = False, size_hint=(1, None), size=(Window.width, 150))
-        self.scrollgrid = GridLayout(cols = 1, row_force_default=True, row_default_height=30, size_hint_x = 1, size_hint_y = None, height = 3000)
+        self.scroll = ScrollView(do_scroll_x = False, size_hint=(1, None), size=(Window.width, 0))
+        self.scrollgrid = GridLayout(cols = 1, row_force_default=True, row_default_height=30, size_hint_x = 1, size_hint_y = None, height = 0)
+        
+        self.show_hide_grid = GridLayout(cols = 1, size_hint_y = None, height = 30)
+        self.show_hide_btn = Button(text="Show", font_size=18, on_press=self.show_hide)
+        self.show_hide_grid.add_widget(self.show_hide_btn)
 
         self.top_grid.add_widget(self.spinns.sea_op)
 
@@ -53,7 +61,7 @@ class SearchElement(GridLayout):
         self.top_grid.add_widget(self.spinns.varugrupp)
         self.top_grid.add_widget(self.spinns.land)
 
-        self.alt2 = (Button(text="alt2", on_press=self.allt2))
+        self.alt2 = Button(text="alt2", on_press=self.allt2)
        
         self.top_grid.add_widget(self.alt2)
 
@@ -64,11 +72,13 @@ class SearchElement(GridLayout):
         self.top_grid.add_widget(self.submit)
 
         self.scroll.add_widget(self.scrollgrid)
+
         self.element.add_widget(self.top_grid)
         self.element.add_widget(self.scroll)
+        self.element.add_widget(self.show_hide_grid)
 
     def press(self, instance):
-        search_input = self.search.text
+        search_input = self.search.text # Too add -> If "" dont search
         search_land = self.spinns.land.text
         search_varugrupp = self.spinns.varugrupp.text
         search_option = self.spinns.sea_op.text 
@@ -77,8 +87,28 @@ class SearchElement(GridLayout):
 
         res = SysSortiment.search(search_target, search_input, search_option, search_sort, search_varugrupp, search_land)
         for row in res:
-                self.scrollgrid.add_widget(Label(text=f"{row}"))
-        
+            self.rows +=1
+            self.scrollgrid.height += 30
+            self.scrollgrid.add_widget(Label(text=f"{row}"))
+
+        self.hidden = True
+        self.show_hide(self)
+
+    
+    def show_hide(self, instance):
+        if self.hidden:
+            y = self.rows * 30
+            yx = y if y <= 300 else 300   # result = x if a > b else y    
+            self.element.height=(yx+60)
+            self.show_hide_btn.text="Hide"
+            self.scroll.size=(Window.width, yx)
+            self.hidden = False
+        else:
+            self.element.height=60
+            self.show_hide_btn.text="Show"
+            self.scroll.size=(Window.width, 0)
+            self.hidden = True
+
 
     def allt2(self, instance):
         print(f'{self.spinns.varugrupp.text}  {self.spinns.land.text} {self.spinns.sort_op.text}')
