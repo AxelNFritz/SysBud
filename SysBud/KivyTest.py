@@ -6,38 +6,56 @@ from kivy.app import App
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.scrollview import ScrollView
 from kivy.core.window import Window
 from kivy.uix.spinner import Spinner
+from kivy.core.text import LabelBase
+from kivy.uix.widget import Widget
+
+from kivymd.uix.label import MDLabel
+from kivymd.icon_definitions import md_icons
+from kivymd.app import MDApp
+from kivymd.uix.button import MDFloatingActionButton, MDRectangleFlatIconButton
+from kivymd.uix.gridlayout import MDGridLayout
+from kivymd.uix.screen import MDScreen
 
 class MyGridLayout(GridLayout):
 
+    #LabelBase.register(name='Symbol', 
+    #               fn_regular='Symbol-font.ttf')
+
     def __init__(self, **kwargs):
         super(MyGridLayout, self).__init__(**kwargs)
-        self.cols = 1
+        self.cols=1
 
+        self.main_grid=(GridLayout(cols=1))
         self.first = SearchElement()
         self.sea_element_list = [self.first]
 
-        self.addsear = Button(text="+ + + Add search element + + +", font_size=20, size_hint_y = None, height = 30, on_press=self.addbutt)        
-        
-        self.add_widget(self.addsear)
-        self.add_widget(self.first.element)
+        self.addsear = MDFloatingActionButton(icon="plus", on_press=self.addbutt, elevation_normal=6, pos_hint={"center_x": .5, "center_y": .5})
+        self.btn_anchor = AnchorLayout(anchor_x='center', anchor_y='bottom')
+        self.btn_anchor.add_widget(self.addsear)
 
+        self.add_widget(self.first.element)
+        self.add_widget(self.main_grid)
+        self.add_widget(self.btn_anchor)    
+
+        
     def addbutt(self, instance):
         self.add()
     
     def add(self):
         new = SearchElement()
-        self.add_widget(new.element)
+        self.main_grid.add_widget(new.element)
         self.sea_element_list.append(new)
 
-class MyApp(App):
+class MyApp(MDApp):
     def build(self):
         return MyGridLayout()
  
-class SearchElement(GridLayout):
+class SearchElement(MDGridLayout):
     def __init__(self):
         self.hidden = True
         self.rows = 0
@@ -89,7 +107,7 @@ class SearchElement(GridLayout):
         for row in res:
             self.rows +=1
             self.scrollgrid.height += 30
-            self.scrollgrid.add_widget(Label(text=f"{row}"))
+            self.scrollgrid.add_widget(MDLabel(text=f"{row}", halign='center'))
 
         self.hidden = True
         self.show_hide(self)

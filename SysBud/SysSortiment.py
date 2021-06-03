@@ -38,7 +38,6 @@ def generate_db(exel_file, cur):
         add_bev(colums, cur)
 
 
- 
 
 def add_bev(row, cur):
     statement=f"INSERT INTO dryck_utbud values('{row[0]}', '{row[1]}', '{row[2]}', '{row[3]}', '{row[4]}', '{row[5]}', '{row[6]}', '{row[7]}', '{row[8]}', '{row[9]}', '{row[10]}', '{row[11]}','{row[12]}');"
