@@ -49,11 +49,11 @@ def search(target, input, option, sort, varugrupp, land): #(search_target, searc
 
     land_s = "" if land == 'Land' else f"AND land='{land}'"  # result = x if a > b else y
     varugrupp_s = "" if varugrupp == 'Varugrupp' else f"AND varugrupp='{varugrupp}'"
-    sort_s = "" if sort == 'Sortering' else f"ORDER BY {sort} DESC"
+    sort_s = "" if sort == 'Sortering' else f"ORDER BY {sort} DESC" # If Pris/liter it should be ASC
     input_s = input if option == 'Sök' else f"LIMIT {input}"
 
     if option == 'Sök':
-        statement=f"SELECT * FROM dryck_utbud WHERE {target} LIKE '%{input_s}%' {land_s} {varugrupp_s} {sort_s};"
+        statement=f"SELECT * FROM dryck_utbud WHERE {target} LIKE '%{input_s}%' {land_s} {varugrupp_s} {sort_s} LIMIT 500;"
     else:
         statement=f"SELECT * FROM dryck_utbud WHERE {target} LIKE '%%' {land_s} {varugrupp_s} {sort_s} {input_s};"
 

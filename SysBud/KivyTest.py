@@ -21,7 +21,7 @@ from kivymd.uix.button import MDFloatingActionButton, MDRectangleFlatIconButton
 from kivymd.uix.gridlayout import MDGridLayout
 from kivymd.uix.screen import MDScreen
 
-class MyGridLayout(GridLayout):
+class MyGridLayout(MDGridLayout):
 
     #LabelBase.register(name='Symbol', 
     #               fn_regular='Symbol-font.ttf')
@@ -30,12 +30,12 @@ class MyGridLayout(GridLayout):
         super(MyGridLayout, self).__init__(**kwargs)
         self.cols=1
 
-        self.main_grid=(GridLayout(cols=1))
+        self.main_grid=(MDGridLayout(cols=1))
         self.first = SearchElement()
         self.sea_element_list = [self.first]
 
         self.addsear = MDFloatingActionButton(icon="plus", on_press=self.addbutt, elevation_normal=6, pos_hint={"center_x": .5, "center_y": .5})
-        self.btn_anchor = AnchorLayout(anchor_x='center', anchor_y='bottom')
+        self.btn_anchor = AnchorLayout(padding=16, anchor_x='center', anchor_y='bottom')
         self.btn_anchor.add_widget(self.addsear)
 
         self.add_widget(self.first.element)
@@ -62,12 +62,13 @@ class SearchElement(MDGridLayout):
 
         self.spinns = SpinnElements()
 
-        self.element = GridLayout(cols = 1, size_hint_y = None, height = 60)
-        self.top_grid = GridLayout(cols = 8, size_hint_y = None, height = 30)
+        self.element = MDGridLayout(cols = 1, size_hint_y = None, height = 60)
+
+        self.top_grid = MDGridLayout(cols = 8, size_hint_y = None, height = 30)
         self.scroll = ScrollView(do_scroll_x = False, size_hint=(1, None), size=(Window.width, 0))
-        self.scrollgrid = GridLayout(cols = 1, row_force_default=True, row_default_height=30, size_hint_x = 1, size_hint_y = None, height = 0)
+        self.scrollgrid = MDGridLayout(cols = 8, row_force_default=True, row_default_height=25, size_hint_x = 1, size_hint_y = None, height = 0)
         
-        self.show_hide_grid = GridLayout(cols = 1, size_hint_y = None, height = 30)
+        self.show_hide_grid = MDGridLayout(cols = 1, size_hint_y = None, height = 30)
         self.show_hide_btn = Button(text="Show", font_size=18, on_press=self.show_hide)
         self.show_hide_grid.add_widget(self.show_hide_btn)
 
@@ -78,10 +79,6 @@ class SearchElement(MDGridLayout):
 
         self.top_grid.add_widget(self.spinns.varugrupp)
         self.top_grid.add_widget(self.spinns.land)
-
-        self.alt2 = Button(text="alt2", on_press=self.allt2)
-       
-        self.top_grid.add_widget(self.alt2)
 
         self.top_grid.add_widget(self.spinns.sort_op)
 
@@ -96,27 +93,24 @@ class SearchElement(MDGridLayout):
         self.element.add_widget(self.show_hide_grid)
 
     def press(self, instance):
-        search_input = self.search.text # Too add -> If "" dont search
-        search_land = self.spinns.land.text
-        search_varugrupp = self.spinns.varugrupp.text
-        search_option = self.spinns.sea_op.text 
-        search_sort = self.spinns.sort_op.text
-        search_target = 'namn1'
+        input = self.search.text # Too add -> If "" dont search
+        land = self.spinns.land.text
+        varugrupp = self.spinns.varugrupp.text
+        option = self.spinns.sea_op.text 
+        sort = self.spinns.sort_op.text
+        target = 'namn1'
 
-        res = SysSortiment.search(search_target, search_input, search_option, search_sort, search_varugrupp, search_land)
-        for row in res:
-            self.rows +=1
-            self.scrollgrid.height += 30
-            self.scrollgrid.add_widget(MDLabel(text=f"{row}", halign='center'))
+        res = SysSortiment.search(target, input, option, sort, varugrupp, land)
+        
+        self.present_search(res, land, varugrupp, option, sort)
 
         self.hidden = True
         self.show_hide(self)
 
-    
     def show_hide(self, instance):
         if self.hidden:
-            y = self.rows * 30
-            yx = y if y <= 300 else 300   # result = x if a > b else y    
+            y = self.rows * 25
+            yx = y if y <= 250 else 250   # result = x if a > b else y    
             self.element.height=(yx+60)
             self.show_hide_btn.text="Hide"
             self.scroll.size=(Window.width, yx)
@@ -129,9 +123,32 @@ class SearchElement(MDGridLayout):
 
 
     def allt2(self, instance):
-        print(f'{self.spinns.varugrupp.text}  {self.spinns.land.text} {self.spinns.sort_op.text}')
+        print(f'{self.spinns.varugrupp.text} {self.spinns.land.text} {self.spinns.sort_op.text}')
 
-class SpinnElements(GridLayout):
+    def present_search(self, result_list, land, varugrupp, option, sort):    # Does not work, needs to be class/clasees
+        
+        for row in result_list:
+            self.rows +=1
+            self.scrollgrid.height += 25
+            self.scrollgrid.add_widget(MDLabel(text=f"{row[0]}", halign='center', size_hint_x = None, width = 90)) #0, 1, 6, 9, 4, 12 Lägg till pris?
+            self.scrollgrid.add_widget(MDLabel(text=f"{row[1]}", halign='center'))
+            self.scrollgrid.add_widget(MDLabel(text=f"{row[6]}, {row[7]}", halign='center'))
+            self.scrollgrid.add_widget(MDLabel(text=f"{row[9]}", halign='center', size_hint_x = None, width = 180))
+            self.scrollgrid.add_widget(MDLabel(text=f"{row[4]}cl", halign='center', size_hint_x = None, width = 70))
+            self.scrollgrid.add_widget(MDLabel(text=f"{round(row[12], 3)}", halign='center', size_hint_x = None, width = 70))
+            self.scrollgrid.add_widget(Button(text="I", size_hint_x = None, width = 30, on_press=lambda instance: self.info(instance, row)))
+            self.scrollgrid.add_widget(Button(text="X", size_hint_x = None, width = 30))
+            #print(row)
+
+    def info(self, instance, row):
+        print(f'{row}')
+
+#class presentElement(MDGridLayout):
+#    def _init__(self):
+#        self.element
+
+
+class SpinnElements(MDGridLayout):
     def __init__(self):
 
         self.varugrupp_list, self.land_list = SysSortiment.get_spinner_ops()
@@ -139,14 +156,14 @@ class SpinnElements(GridLayout):
         self.varugrupp = Spinner(text="Varugrupp",
                                 values=self.varugrupp_list,
                                 size_hint=(None, None),
-                                size=(160, 30),
+                                size=(200, 30),
                                 pos_hint={'center_x': .5, 'center_y': .5},
                                 sync_height=True)
         
         self.land = Spinner(text="Land",
                                 values=self.land_list,
                                 size_hint=(None, None),
-                                size=(160, 30),
+                                size=(180, 30),
                                 pos_hint={'center_x': .5, 'center_y': .5},
                                 sync_height=True)
         
