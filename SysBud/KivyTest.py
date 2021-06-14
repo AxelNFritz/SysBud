@@ -28,6 +28,8 @@ from kivy.utils import get_color_from_hex
 
 class MyGridLayout(MDGridLayout):
 
+    sea_element_list = []
+
     #LabelBase.register(name='Symbol', 
     #               fn_regular='Symbol-font.ttf')
 
@@ -37,7 +39,7 @@ class MyGridLayout(MDGridLayout):
 
         self.main_grid=(MDGridLayout(cols=1))
         self.first = SearchElement()
-        self.sea_element_list = [self.first]
+        self.sea_element_list.append(self.first)
 
         self.addsear = MDFloatingActionButton(icon="plus", on_press=self.addbutt, elevation_normal=6, pos_hint={"center_x": .5, "center_y": .5})
         self.btn_anchor = AnchorLayout(padding=16, anchor_x='center', anchor_y='bottom')
@@ -64,6 +66,7 @@ class SearchElement(MDGridLayout):
     def __init__(self):
         self.hidden = True
         self.rows = 0
+        self.row_o_list = []
 
         self.spinns = SpinnElements()
 
@@ -71,10 +74,10 @@ class SearchElement(MDGridLayout):
 
         self.top_grid = MDGridLayout(cols = 8, size_hint_y = None, height = 30)
         self.scroll = ScrollView(do_scroll_x = False, size_hint=(1, None), size=(Window.width, 0))
-        self.scrollgrid = MDGridLayout(cols = 8, row_force_default=True, row_default_height=25, size_hint=(1, None), height = 0, padding=[5,0])
+        self.scrollgrid = MDGridLayout(cols = 1, row_force_default=True, row_default_height=25, size_hint=(1, None), height = 0, padding=[5,0])
         
-        self.scrollgrid.canvas.add(Color(rgb=get_color_from_hex("#39B3F2")))
-        self.scrollgrid.canvas.add(Rectangle(size=(20, 25), pos=(50, 50))) #self.scrollgrid.pos))
+        #self.scrollgrid.canvas.add(Color(rgb=get_color_from_hex("#39B3F2")))
+        #self.scrollgrid.canvas.add(Rectangle(size=(20, 25), pos=(50, 50))) #self.scrollgrid.pos))
         #2000, 25*100
         
         self.show_hide_grid = MDGridLayout(cols = 1, size_hint_y = None, height = 30)
@@ -135,31 +138,40 @@ class SearchElement(MDGridLayout):
         print(f'{self.spinns.varugrupp.text} {self.spinns.land.text} {self.spinns.sort_op.text}')
 
     def present_search(self, result_list, land, varugrupp, option, sort):    # Does not work, needs to be class/clasees
-        rader = len(result_list)
+        
+        #rader = len(result_list)
         #canvas.before=(Color=(rgba=[.5,.5,.5,1]), Line=(width=2, rectangle=(self.x, self.y, self.width, self.height))
-        self.rows +=1
-        self.scrollgrid.height += 25
-        self.scrollgrid.add_widget(MDLabel(text=f"Artkl.nr: ", size_hint_x = None, width = 90)) #0, 1, 6, 9, 4, 12 Lägg till pris?
-        self.scrollgrid.add_widget(MDLabel(text=f"Namn: "))
-        self.scrollgrid.add_widget(MDLabel(text=f"Stil: "))
-        self.scrollgrid.add_widget(MDLabel(text=f"Land: ", size_hint_x = None, width = 180))
-        self.scrollgrid.add_widget(MDLabel(text=f"Volym: ", size_hint_x = None, width = 70))
-        self.scrollgrid.add_widget(MDLabel(text=f"APK: ", size_hint_x = None, width = 70))
-        self.scrollgrid.add_widget(MDLabel(text="Rader:", size_hint_x = None, width = 45))
-        self.scrollgrid.add_widget(MDLabel(text=f"{rader}", size_hint_x = None,  width = 35, halign='center'))
-
+        #self.rows +=1
+        #self.scrollgrid.height += 25
+        #self.scrollgrid.add_widget(MDLabel(text=f"Artkl.nr: ", size_hint_x = None, width = 90)) #0, 1, 6, 9, 4, 12 Lägg till pris?
+        #self.scrollgrid.add_widget(MDLabel(text=f"Namn: "))
+        #self.scrollgrid.add_widget(MDLabel(text=f"Stil: "))
+        #self.scrollgrid.add_widget(MDLabel(text=f"Land: ", size_hint_x = None, width = 180))
+        #self.scrollgrid.add_widget(MDLabel(text=f"Volym: ", size_hint_x = None, width = 70))
+        #self.scrollgrid.add_widget(MDLabel(text=f"APK: ", size_hint_x = None, width = 70))
+        #self.scrollgrid.add_widget(MDLabel(text="Rader:", size_hint_x = None, width = 45))
+        #self.scrollgrid.add_widget(MDLabel(text=f"{rader}", size_hint_x = None,  width = 35, halign='center'))
         for row in result_list:
             self.rows +=1
             self.scrollgrid.height += 25
-            self.scrollgrid.add_widget(MDLabel(text=f"{row[0]}", size_hint_x = None, width = 90)) #0, 1, 6, 9, 4, 12 Lägg till pris?
-            self.scrollgrid.add_widget(MDLabel(text=f"{row[1]}"))
-            self.scrollgrid.add_widget(MDLabel(text=f"{row[6]}, {row[7]}"))
-            self.scrollgrid.add_widget(MDLabel(text=f"{row[9]}", size_hint_x = None, width = 180))
-            self.scrollgrid.add_widget(MDLabel(text=f"{row[4]}cl", size_hint_x = None, width = 70))
-            self.scrollgrid.add_widget(MDLabel(text=f"{round(row[12], 3)}", size_hint_x = None, width = 70))
-            self.scrollgrid.add_widget(Button(text="I", size_hint_x = None, width = 40)) #, on_press=lambda instance: self.info(instance, row)))
-            self.scrollgrid.add_widget(Button(text="X", size_hint_x = None, width = 40))
+            self.new_o = PresentResult(row)
+            self.row_o_list.append(self.new_o)
+            
+            self.scrollgrid.add_widget(self.new_o.p_element)
+        
+        #for row in result_list:
+        #    self.rows +=1
+        #    self.scrollgrid.height += 25
+        #    self.scrollgrid.add_widget(MDLabel(text=f"{row[0]}", size_hint_x = None, width = 90)) #0, 1, 6, 9, 4, 12 Lägg till pris?
+        #    self.scrollgrid.add_widget(MDLabel(text=f"{row[1]}"))
+        #    self.scrollgrid.add_widget(MDLabel(text=f"{row[6]}, {row[7]}"))
+        #    self.scrollgrid.add_widget(MDLabel(text=f"{row[9]}", size_hint_x = None, width = 180))
+        #    self.scrollgrid.add_widget(MDLabel(text=f"{row[4]}cl", size_hint_x = None, width = 70))
+        #    self.scrollgrid.add_widget(MDLabel(text=f"{round(row[12], 3)}", size_hint_x = None, width = 70))
+        #    self.scrollgrid.add_widget(Button(text="I", size_hint_x = None, width = 40)) #, on_press=lambda instance: self.info(instance, row)))
+        #    self.scrollgrid.add_widget(Button(text="X", size_hint_x = None, width = 40))
             #print(row)
+        pass
 
     def info(self, instance, row):
         print(f'{row}')
@@ -167,7 +179,39 @@ class SearchElement(MDGridLayout):
 #class presentElement(MDGridLayout):
 #    def _init__(self):
 #        self.element
+class PresentResult(MDGridLayout):
+    def __init__(self, result_row):
 
+        self.row = result_row
+        self.p_element = MDGridLayout(cols = 8)
+        self.p_element.canvas.add(Color(rgb=get_color_from_hex("#39B3F2")))
+        self.p_element.canvas.add(Rectangle(size=(250, 25), pos=self.pos)) #self.scrollgrid.pos))
+
+        self.p_element.add_widget(MDLabel(text=f"{result_row[0]}", size_hint_x = None, width = 90)) #0, 1, 6, 9, 4, 12 Lägg till pris?
+        self.p_element.add_widget(MDLabel(text=f"{result_row[1]}"))
+        self.p_element.add_widget(MDLabel(text=f"{result_row[6]}, {result_row[7]}"))
+        self.p_element.add_widget(MDLabel(text=f"{result_row[9]}", size_hint_x = None, width = 180))
+        self.p_element.add_widget(MDLabel(text=f"{result_row[4]}cl", size_hint_x = None, width = 70))
+        self.p_element.add_widget(MDLabel(text=f"{round(result_row[12], 3)}", size_hint_x = None, width = 70))
+        self.p_element.add_widget(Button(text="I", size_hint_x = None, width = 40, on_press=lambda instance: print(result_row)))  #self.info(instance, result_row)))
+        self.p_element.add_widget(Button(text="X", size_hint_x = None, width = 40, on_press=lambda instance: self.parent.remove_widget(self.parent)))
+        
+
+    def rem(self, instance, row):
+        for sea_e in MyGridLayout.sea_element_list:
+            for row_e in sea_e.row_o_list:
+                if row[0] == row_e.row[0]:
+                    print(row_e)
+                    sea_e.remove_widget(row_e.p_element)
+                    print(row_e)
+                    del row_e
+                    
+
+        
+
+    def info(self, instance, row):
+        print(f'{row}')
+        
 
 class SpinnElements(MDGridLayout):
     def __init__(self):
