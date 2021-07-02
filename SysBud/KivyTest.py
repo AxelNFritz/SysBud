@@ -190,16 +190,16 @@ class PresentResult(MDGridLayout):
             object.rows -= 1
 
     def info(self, instance, result_row):
+        i_element = MDGridLayout(cols = 2)
 
-        i_element = MDGridLayout(cols = 13)
-        i_sizes = [90, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-
-        for i in result_row:
-            i_element.add_widget(MDLabel(text=f"{i}", theme_text_color="Custom", text_color=[.8, 1, 1, 1]))
+        i_texts = ['Artikel Nr','Namn1','Namn2','Pris','Volym(ml)','Kr/Liter','Varugrupp','Typ','Stil','Land','Producent','Alk(%)','APK']
+        for i in range(len(result_row)):
+            i_element.add_widget(MDLabel(text=f'{i_texts[i]}: ', theme_text_color="Custom", text_color=[.8, 1, 1, 1]))
+            i_element.add_widget(MDLabel(text=f"{result_row[i]}", theme_text_color="Custom", text_color=[.8, 1, 1, 1]))
 
         popup = Popup(title=f'{result_row[1]} full information',
                     content=i_element,
-                    size_hint=(None, None), size=(Window.width, 200))
+                    size_hint=(None, None), size=(350, 500))
         
         popup.open()
         
