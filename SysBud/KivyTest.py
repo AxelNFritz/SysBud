@@ -1,4 +1,3 @@
-from re import MULTILINE
 import SysSortiment
 import kivy
 import pandas as pd
@@ -14,6 +13,7 @@ from kivy.core.window import Window
 from kivy.uix.spinner import Spinner
 from kivy.core.text import LabelBase
 from kivy.uix.widget import Widget
+from kivy.uix.popup import Popup
 
 from kivymd.uix.label import MDLabel
 from kivymd.icon_definitions import md_icons
@@ -21,6 +21,7 @@ from kivymd.app import MDApp
 from kivymd.uix.button import MDFloatingActionButton, MDRectangleFlatIconButton
 from kivymd.uix.gridlayout import MDGridLayout
 from kivymd.uix.screen import MDScreen
+from kivymd.uix.textfield import MDTextField, MDTextFieldRect, MDTextFieldRound
 
 from kivy.graphics import Color, Rectangle
 from kivy.utils import get_color_from_hex
@@ -28,25 +29,22 @@ from kivy.utils import get_color_from_hex
 
 class MyGridLayout(MDGridLayout):
 
-    sea_element_list = []
-
-    #LabelBase.register(name='Symbol', 
-    #               fn_regular='Symbol-font.ttf')
-
     def __init__(self, **kwargs):
         super(MyGridLayout, self).__init__(**kwargs)
         self.cols=1
 
         self.main_grid=(MDGridLayout(cols=1))
         self.first = SearchElement()
-        self.sea_element_list.append(self.first)
+        self.c = []
+        self.c.append(self.first)
 
         self.addsear = MDFloatingActionButton(icon="plus", on_press=self.addbutt, elevation_normal=6, pos_hint={"center_x": .5, "center_y": .5})
         self.btn_anchor = AnchorLayout(padding=16, anchor_x='center', anchor_y='bottom')
         self.btn_anchor.add_widget(self.addsear)
 
-        self.add_widget(self.first.element)
+        #self.add_widget(self.first.element)
         self.add_widget(self.main_grid)
+        self.main_grid.add_widget(self.first.element)
         self.add_widget(self.btn_anchor)    
 
         
@@ -56,7 +54,7 @@ class MyGridLayout(MDGridLayout):
     def add(self):
         new = SearchElement()
         self.main_grid.add_widget(new.element)
-        self.sea_element_list.append(new)
+        self.c.append(new)
 
 class MyApp(MDApp):
     def build(self):
@@ -67,8 +65,6 @@ class SearchElement(MDGridLayout):
         self.hidden = True
         self.rows = 0
         self.row_o_list = []
-
-        self.spinns = SpinnElements()
 
         self.element = MDGridLayout(cols = 1, size_hint_y = None, height = 60)
 
@@ -84,11 +80,16 @@ class SearchElement(MDGridLayout):
         self.show_hide_btn = Button(text="Show", font_size=18, on_press=self.show_hide)
         self.show_hide_grid.add_widget(self.show_hide_btn)
 
+        
+
+        self.search = MDTextFieldRect(hint_text='Sök dryck') #, height=10, pos=(0, 20))
+
+        self.spinns = SpinnElements(self.search)
+
         self.top_grid.add_widget(self.spinns.sea_op)
 
-        self.search = TextInput(multiline=False)
         self.top_grid.add_widget(self.search)
-
+        
         self.top_grid.add_widget(self.spinns.varugrupp)
         self.top_grid.add_widget(self.spinns.land)
 
@@ -103,6 +104,7 @@ class SearchElement(MDGridLayout):
         self.element.add_widget(self.top_grid)
         self.element.add_widget(self.scroll)
         self.element.add_widget(self.show_hide_grid)
+    
 
     def press(self, instance):
         input = self.search.text # Too add -> If "" dont search
@@ -151,70 +153,59 @@ class SearchElement(MDGridLayout):
         #self.scrollgrid.add_widget(MDLabel(text=f"APK: ", size_hint_x = None, width = 70))
         #self.scrollgrid.add_widget(MDLabel(text="Rader:", size_hint_x = None, width = 45))
         #self.scrollgrid.add_widget(MDLabel(text=f"{rader}", size_hint_x = None,  width = 35, halign='center'))
+
         for row in result_list:
             self.rows +=1
+            self.scrollgrid.canvas.before.add(Color(rgb=get_color_from_hex("#d3d3d3")))
+            self.scrollgrid.canvas.before.add(Rectangle(size=(2500, 23), pos=(0, ((self.rows*25) -24 ))))
             self.scrollgrid.height += 25
-            self.new_o = PresentResult(row)
+            
+            self.new_o = PresentResult(row, self)
             self.row_o_list.append(self.new_o)
             
             self.scrollgrid.add_widget(self.new_o.p_element)
-        
-        #for row in result_list:
-        #    self.rows +=1
-        #    self.scrollgrid.height += 25
-        #    self.scrollgrid.add_widget(MDLabel(text=f"{row[0]}", size_hint_x = None, width = 90)) #0, 1, 6, 9, 4, 12 Lägg till pris?
-        #    self.scrollgrid.add_widget(MDLabel(text=f"{row[1]}"))
-        #    self.scrollgrid.add_widget(MDLabel(text=f"{row[6]}, {row[7]}"))
-        #    self.scrollgrid.add_widget(MDLabel(text=f"{row[9]}", size_hint_x = None, width = 180))
-        #    self.scrollgrid.add_widget(MDLabel(text=f"{row[4]}cl", size_hint_x = None, width = 70))
-        #    self.scrollgrid.add_widget(MDLabel(text=f"{round(row[12], 3)}", size_hint_x = None, width = 70))
-        #    self.scrollgrid.add_widget(Button(text="I", size_hint_x = None, width = 40)) #, on_press=lambda instance: self.info(instance, row)))
-        #    self.scrollgrid.add_widget(Button(text="X", size_hint_x = None, width = 40))
-            #print(row)
-        pass
 
     def info(self, instance, row):
         print(f'{row}')
 
-#class presentElement(MDGridLayout):
-#    def _init__(self):
-#        self.element
+
 class PresentResult(MDGridLayout):
-    def __init__(self, result_row):
+    def __init__(self, result_row, object):
 
-        self.row = result_row
         self.p_element = MDGridLayout(cols = 8)
-        self.p_element.canvas.add(Color(rgb=get_color_from_hex("#39B3F2")))
-        self.p_element.canvas.add(Rectangle(size=(250, 25), pos=self.pos)) #self.scrollgrid.pos))
 
-        self.p_element.add_widget(MDLabel(text=f"{result_row[0]}", size_hint_x = None, width = 90)) #0, 1, 6, 9, 4, 12 Lägg till pris?
+        self.p_element.add_widget(MDLabel(text=f"{result_row[0]}", size_hint_x = None, width = 90)) #0, 1, 6, 9, 4, 12 Lägg till prijacs?
         self.p_element.add_widget(MDLabel(text=f"{result_row[1]}"))
         self.p_element.add_widget(MDLabel(text=f"{result_row[6]}, {result_row[7]}"))
         self.p_element.add_widget(MDLabel(text=f"{result_row[9]}", size_hint_x = None, width = 180))
         self.p_element.add_widget(MDLabel(text=f"{result_row[4]}cl", size_hint_x = None, width = 70))
         self.p_element.add_widget(MDLabel(text=f"{round(result_row[12], 3)}", size_hint_x = None, width = 70))
-        self.p_element.add_widget(Button(text="I", size_hint_x = None, width = 40, on_press=lambda instance: print(result_row)))  #self.info(instance, result_row)))
-        self.p_element.add_widget(Button(text="X", size_hint_x = None, width = 40, on_press=lambda instance: self.parent.remove_widget(self.parent)))
+        self.p_element.add_widget(Button(text="I", size_hint_x = None, width = 40, on_press=lambda instance: self.info(instance, result_row))) 
+        self.p_element.add_widget(Button(text="X", size_hint_x = None, width = 40, on_press=lambda instance: rem(self, instance))) 
         
 
-    def rem(self, instance, row):
-        for sea_e in MyGridLayout.sea_element_list:
-            for row_e in sea_e.row_o_list:
-                if row[0] == row_e.row[0]:
-                    print(row_e)
-                    sea_e.remove_widget(row_e.p_element)
-                    print(row_e)
-                    del row_e
-                    
+        def rem(self, instance):
+            self.p_element.parent.remove_widget(self.p_element)
+            object.scrollgrid.height -= 25
+            object.rows -= 1
 
+    def info(self, instance, result_row):
+
+        i_element = MDGridLayout(cols = 13)
+        i_sizes = [90, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+        for i in result_row:
+            i_element.add_widget(MDLabel(text=f"{i}", theme_text_color="Custom", text_color=[.8, 1, 1, 1]))
+
+        popup = Popup(title=f'{result_row[1]} full information',
+                    content=i_element,
+                    size_hint=(None, None), size=(Window.width, 200))
         
-
-    def info(self, instance, row):
-        print(f'{row}')
+        popup.open()
         
 
 class SpinnElements(MDGridLayout):
-    def __init__(self):
+    def __init__(self, object):
 
         self.varugrupp_list, self.land_list = SysSortiment.get_spinner_ops()
 
@@ -238,6 +229,14 @@ class SpinnElements(MDGridLayout):
                                 size=(60, 30),
                                 pos_hint={'center_x': .5, 'center_y': .5},
                                 sync_height=True)
+        
+        def sea_op_dep(spinner, text):
+            if self.sea_op.text == 'Sök':
+               object.hint_text = 'Sök dryck'
+            else:
+               object.hint_text = 'Ange rader'
+        
+        self.sea_op.bind(text=sea_op_dep)
 
         self.sort_op = Spinner(text="Sortering",
                                 values=('Sortering', 'APK', 'prisperliter'),
@@ -245,8 +244,8 @@ class SpinnElements(MDGridLayout):
                                 size=(80, 30),
                                 pos_hint={'center_x': .5, 'center_y': .5},
                                 sync_height=True)
-        
 
+        
 
 if __name__ == '__main__':
     MyApp().run()
