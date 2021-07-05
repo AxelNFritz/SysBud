@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "bustling-nomad-318614",
+  "private_key_id": "af2db8cf5679843ce12b0115c495e28167f4af0f",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDN5cDNYZB8Bls4\nWibfX4fVWcjMfaZc5y6mChXH4Z4AmiLTdUW5MexaTW9lSIwzWq39518iTyco2rcL\nF7DNlpv+1bZgZeZTuZm+R01i41/NBXGH+5M6MirQ47+gJ4yg8mVCthJozp75CI+2\nugg3LDEIYqfT9YnFA3kuL/ysstlj3dvPAVuP21V77eRXXA2Trms/oC/YvQ9Iil7e\nqW7DOBpVt2vz/ZlTwMUhu5a0+y6OSgfxbJ+ydkHeSEcNb35YsXZKMFusebT6BoWD\n5HCP2M897jy4dXxdFJq7zAVQ1q6BVxcUz+5PuUNgIUTdDa3D5XKqmBOiKqA9zfn/\nCfA4EzH/AgMBAAECggEAX+4gdvByl36EqMxEGUXSrUJQTopqZRWnQ+AmBsNlUOV/\nvWMB0cfjVa2Hbbqv68tfjpFq3zrexWel6eqnSxpVYxWii+ZeOnsamS9ybFUA0S6s\nl01M6svt6/Z41T8oA+L77+mRyTgflGr7PokNg9s4my4QAK8BegPkxXLBOJt5ss+Y\n6fy9L4ngQSdv0mhZDRYKHapgdew8XA6eLbApBBJMrmVo9e2GGh3yrhazItnE5z2n\nkYw34DMpL5h/GCeO7RzITwhfyl0BCM1y6VwNisNWTQUNpBZDTp212G0RBJhMPfeR\nJeBd2f1QXMQlmyaWgWz+CFD3P4qtYa/3s9raVW3lhQKBgQDtJUbNFoep4pF465vB\nOLS7u8fRk5zf6jBHLxWQY2zt569O5yHBIuUdHRCjQEhjInZxyb7aYzQ86vSSNjye\n0LYw+UwBC/i6rXzzrqo5emRpXhW6pDs5mUFES+4Fs9HGOBGw6yj+CZ8/Q4Q6m7bb\nFgeoZCsmouRWmsvFlB1JtD+TFQKBgQDeRHheMDoBKl5NUL648NZ88PZk8xQiieTq\nlO9LRG4RTDSyRgMpK5rlaNLU5EbyB3yfD652iwGAZM1l4ifATKvxQXoAMyUqdUM5\n+Ht0rZhfe5qpmY3maql37gRkr1CD6Ua/eBehMGxrRpVdmQEgARoyaOAMsD98FYwe\nHASwm1vFwwKBgQCB7fGLvnNX9gXkLZqp0+raDPle7zR9Ti9jYP28nWz6L/1SCrro\nubi0Kc+K0laW0jP5BiMmPkJJuiWD0mmGTi30STKGREvj49fZH3KuiUtom57mIsM8\nPKaQx9VClJIzu1aeC0nrXdQ9cj2JavVVtg0+CpvF0Guws6E/wHYHgtVuPQKBgFcu\ncDAxpm7SmY6l/0k3Xko/kcXi+qDZiarhpELXonyycXEDuTWq3uThCuFqcNF6Uk1p\nrzrcJ0ifQVmXLZRl/oNw9VOivA89U5MnffU0KjI5n16q1lfsunBKMfr0MRasp41u\no4YcIkqpsui1nRVamVXwgQE5GI2pPf6JauWC6qpVAoGAefTCg41XeaLkfkEAbHq+\nKq+kzJyDqArZPGzUiV6ABIzzEacLKjuG2lRP+CRmVavpgSW1GYm8nJdrVF65zu1z\nK05AqGCgt0RXS792waXupu7+oKzkZwLpMqkKASx+8u83XO14Q5xexE+pW2XFDUJm\nr7eTeId44jVnPINrZXitXDc=\n-----END PRIVATE KEY-----\n",
+  "client_email": "products-2020-jul-08@bustling-nomad-318614.iam.gserviceaccount.com",
+  "client_id": "117339044266972651937",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/products-2020-jul-08%40bustling-nomad-318614.iam.gserviceaccount.com"
+}
