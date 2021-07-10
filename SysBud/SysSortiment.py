@@ -53,7 +53,7 @@ def search(target, input, option, sort, varugrupp, land): #(search_target, searc
     input_s = input if option == 'Sök' else f"LIMIT {input}"
 
     if option == 'Sök':
-        statement=f"SELECT * FROM dryck_utbud WHERE {target} LIKE '%{input_s}%' {land_s} {varugrupp_s} {sort_s} LIMIT 100;"
+        statement=f"SELECT * FROM dryck_utbud WHERE {target} LIKE '%{input_s}%' {land_s} {varugrupp_s} {sort_s} LIMIT 40;"
     else:
         statement=f"SELECT * FROM dryck_utbud WHERE {target} LIKE '%%' {land_s} {varugrupp_s} {sort_s} {input_s};"
 

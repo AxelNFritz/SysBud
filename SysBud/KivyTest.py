@@ -15,6 +15,7 @@ from kivy.core.text import LabelBase
 from kivy.uix.widget import Widget
 from kivy.uix.popup import Popup
 
+from kivymd.color_definitions import colors
 from kivymd.uix.label import MDLabel
 from kivymd.icon_definitions import md_icons
 from kivymd.app import MDApp
@@ -38,11 +39,10 @@ class MyGridLayout(MDGridLayout):
         self.c = []
         self.c.append(self.first)
 
-        self.addsear = MDFloatingActionButton(icon="plus", on_press=self.addbutt, elevation_normal=6, pos_hint={"center_x": .5, "center_y": .5})
+        self.addsear = MDFloatingActionButton(icon="plus", md_bg_color=colors['Green']['500'], elevation=8, on_press=self.addbutt, pos_hint={"center_x": .5, "center_y": .5})
         self.btn_anchor = AnchorLayout(padding=16, anchor_x='center', anchor_y='bottom')
         self.btn_anchor.add_widget(self.addsear)
 
-        #self.add_widget(self.first.element)
         self.add_widget(self.main_grid)
         self.main_grid.add_widget(self.first.element)
         self.add_widget(self.btn_anchor)    
@@ -81,7 +81,6 @@ class SearchElement(MDGridLayout):
         self.show_hide_grid.add_widget(self.show_hide_btn)
 
         
-
         self.search = MDTextFieldRect(hint_text='Sök dryck') #, height=10, pos=(0, 20))
 
         self.spinns = SpinnElements(self.search)
@@ -140,23 +139,9 @@ class SearchElement(MDGridLayout):
         print(f'{self.spinns.varugrupp.text} {self.spinns.land.text} {self.spinns.sort_op.text}')
 
     def present_search(self, result_list, land, varugrupp, option, sort):    # Does not work, needs to be class/clasees
-        
-        #rader = len(result_list)
-        #canvas.before=(Color=(rgba=[.5,.5,.5,1]), Line=(width=2, rectangle=(self.x, self.y, self.width, self.height))
-        #self.rows +=1
-        #self.scrollgrid.height += 25
-        #self.scrollgrid.add_widget(MDLabel(text=f"Artkl.nr: ", size_hint_x = None, width = 90)) #0, 1, 6, 9, 4, 12 Lägg till pris?
-        #self.scrollgrid.add_widget(MDLabel(text=f"Namn: "))
-        #self.scrollgrid.add_widget(MDLabel(text=f"Stil: "))
-        #self.scrollgrid.add_widget(MDLabel(text=f"Land: ", size_hint_x = None, width = 180))
-        #self.scrollgrid.add_widget(MDLabel(text=f"Volym: ", size_hint_x = None, width = 70))
-        #self.scrollgrid.add_widget(MDLabel(text=f"APK: ", size_hint_x = None, width = 70))
-        #self.scrollgrid.add_widget(MDLabel(text="Rader:", size_hint_x = None, width = 45))
-        #self.scrollgrid.add_widget(MDLabel(text=f"{rader}", size_hint_x = None,  width = 35, halign='center'))
-
         for row in result_list:
             self.rows +=1
-            self.scrollgrid.canvas.before.add(Color(rgb=get_color_from_hex("#d3d3d3")))
+            self.scrollgrid.canvas.before.add(Color(rgb=get_color_from_hex("#dcffdb")))
             self.scrollgrid.canvas.before.add(Rectangle(size=(2500, 23), pos=(0, ((self.rows*25) -24 ))))
             self.scrollgrid.height += 25
             
@@ -176,7 +161,12 @@ class PresentResult(MDGridLayout):
 
         self.p_element.add_widget(MDLabel(text=f"{result_row[0]}", size_hint_x = None, width = 90)) #0, 1, 6, 9, 4, 12 Lägg till prijacs?
         self.p_element.add_widget(MDLabel(text=f"{result_row[1]}"))
-        self.p_element.add_widget(MDLabel(text=f"{result_row[6]}, {result_row[7]}"))
+
+        if (len(result_row[6]) > 20) or (len(result_row[6])+len(result_row[7] ) > 35 ):
+            self.p_element.add_widget(MDLabel(text=f"{result_row[6]}"))
+        else:
+            self.p_element.add_widget(MDLabel(text=f"{result_row[6]}, {result_row[7]}"))
+            
         self.p_element.add_widget(MDLabel(text=f"{result_row[9]}", size_hint_x = None, width = 180))
         self.p_element.add_widget(MDLabel(text=f"{result_row[4]}cl", size_hint_x = None, width = 70))
         self.p_element.add_widget(MDLabel(text=f"{round(result_row[12], 3)}", size_hint_x = None, width = 70))
@@ -195,9 +185,9 @@ class PresentResult(MDGridLayout):
         i_texts = ['Artikel Nr','Namn1','Namn2','Pris','Volym(ml)','Kr/Liter','Varugrupp','Typ','Stil','Land','Producent','Alk(%)','APK']
         for i in range(len(result_row)):
             i_element.add_widget(MDLabel(text=f'{i_texts[i]}: ', theme_text_color="Custom", text_color=[.8, 1, 1, 1]))
-            i_element.add_widget(MDLabel(text=f"{result_row[i]}", theme_text_color="Custom", text_color=[.8, 1, 1, 1]))
+            i_element.add_widget(MDLabel(text=f'{result_row[i]}', theme_text_color="Custom", text_color=[.8, 1, 1, 1]))
 
-        popup = Popup(title=f'{result_row[1]} full information',
+        popup = Popup(title=f'{result_row[1]} information',
                     content=i_element,
                     size_hint=(None, None), size=(350, 500))
         
@@ -245,8 +235,5 @@ class SpinnElements(MDGridLayout):
                                 pos_hint={'center_x': .5, 'center_y': .5},
                                 sync_height=True)
 
-        
-
 if __name__ == '__main__':
     MyApp().run()
-

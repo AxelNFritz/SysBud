@@ -11,7 +11,7 @@ creds = service_account.Credentials.from_service_account_file(
 
 
 SPREADSHEET_ID = '1tiqsUAUDFrv36zFThLZxIFdOaAQ4UR9_LVmqlB0cPr0'
-# SAMPLE_RANGE_NAME = 'Class Data!A2:E'
+
 
 def main():
 
@@ -21,10 +21,10 @@ def main():
     sheet = service.spreadsheets()
 
     result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,
-                                range='A2:W20089').execute()
+                                range='A2:G10').execute()   #W20089
   
     values = result.get('values', [])
-
+    print(values)
 
 if __name__ == '__main__':
     main()

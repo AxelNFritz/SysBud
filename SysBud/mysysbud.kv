@@ -1,0 +1,81 @@
+#:kivy 2.0
+
+<MainWindow>:
+    refresh: main_element.__self__
+    MDGridLayout:
+        id: main_window
+        cols:2
+        size: root.width, root.height
+
+        MDNavigationRail:
+            id: rail
+            use_hover_behavior: True
+            hover_bg: 0, 0, 0, .2
+            visible: "Persistent"
+
+            MDNavigationRailItem:
+                id: 0
+                icon: "information-variant"
+                on_press: app.screen_trans(sc0)
+                #text: "Om SysBud"
+
+            MDNavigationRailItem:
+                id: 1
+                icon: "database"
+                on_press: app.screen_trans(sc1)
+                #text: "Skapa databas"
+
+            MDNavigationRailItem:
+                id: 2
+                icon: "glass-wine"
+                on_press: app.screen_trans(sc2)
+                #text: "Sök & Fin"
+
+            MDNavigationRailItem:
+                id: 3
+                icon: "account-circle"
+                on_press: app.screen_trans(sc3)
+                #text: "Skapare & Ressurser"
+
+        ScreenManager:
+            id: screen_m
+
+            Screen:
+                id: sc0
+                name: '0'
+                MDGridLayout:
+                    cols:1
+                    MDLabel:
+                        text: 'welcome'
+                        halign:'center'
+
+
+            Screen:
+                id: sc1
+                name: '1'
+                MDGridLayout:
+                    cols:1
+                    MDLabel:
+                        text: 'database'
+                        halign:'center'
+
+
+            Screen:
+                id: sc2
+                name: '2'
+                MDGridLayout:
+                    id: main_element
+                    cols:1
+                    
+
+
+            Screen:
+                id: sc3
+                name: '3'
+                MDGridLayout:
+                    cols:1
+                    MDLabel:
+                        text: 'resources'
+                        halign:'center'
+
+
